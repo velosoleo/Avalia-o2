@@ -1,0 +1,342 @@
+package br.edu.fameg.sintaxe.avaliacaoParcial2;
+
+import java.util.ArrayList;
+import java.util.Date;
+
+public class Estacionamento {
+
+	private Veiculo[][] vaga = new Veiculo[30][2];
+	int nrVeiculos = 0;
+	
+	public int getNrVeiculos() {
+        return nrVeiculos;
+    }
+	
+	public boolean entradaVeiculo(String placa, String nome,Tipo tipo){
+        for (int i=0; i < this.vaga.length; i++){
+        	 if (tipo.equals(Tipo.carro)){
+            	
+            Automovel carro = new Automovel( nome,placa, Tipo.carro);
+                if (this.vaga[i][0] == null && this.vaga[i][1] == null){
+                    this.vaga[i][0] = carro;
+                    nrVeiculos++;
+                    return true;
+                }
+            } else {
+            	Moto moto = new  Moto(nome, placa,Tipo.moto);
+                if (this.vaga[i][0] == null){
+                    this.vaga[i][0] = moto;
+                    nrVeiculos++;
+                    return true;
+           
+                }else if (this.vaga[i][0].getTipo().equals(Tipo.moto)) {
+                	if(this.vaga[i][1]==null) {
+                		this.vaga[i][1]=moto;
+                		nrVeiculos++;
+                		return true;
+                	}
+               }
+          }
+     }
+        return false;
+ }
+	public void mostrarVeiculo(){
+	    String vagas = "";
+		for(int i=0; i<this.vaga.length;i++){
+		if (vagas!=null) {
+		}
+	}
+	
+}
+	private void removeVeiculo(int i,int l){
+	       this.vaga[i][l] = null;
+	        nrVeiculos--;
+	    }
+		    
+		    private float calculaConta(int i){
+		        float total = 0; 
+		        if (this.vaga[i] != null){
+		            Date data = new Date();
+		          
+			    int horaAtual = data.getHours();
+				int tempo = horaAtual - this.vaga[i].getHora();
+					if (tempo <= 1) {
+						total = (float) this.vaga[i].getPrimeiraHora();
+					} else {
+						total = (float) this.vaga[i].getHoraAdicional() + this.vaga[i].getPrimeiraHora();
+					}
+		        }
+		        return total;
+ }
+		    
+		    public float saiVeiculo(String placa){
+		        float conta = 0;
+		        for (int i=0; i < this.vaga.length; i++){
+		            if (this.vaga[i][0] != null){
+		                if (placa.equals(this.vaga[i][0].getPlaca())){
+		                    conta = calculaConta(i);
+		                    removeVeiculo(i, 0);
+		                    return conta;
+		                }
+		           } else if (this.vaga[i][1] != null){
+		               if (placa.equals(this.vaga[i][1].getPlaca())){
+		                    conta = calculaConta(i);
+		                    removeVeiculo(i, 1);
+		                    return conta;
+		                }   
+		   }
+	 }
+		        return conta;
+ }
+			
+	    public ArrayList<Veiculo> listaEstacionados(){
+		    	ArrayList<Veiculo> lista = new ArrayList<>();
+		        for (int i=0; i < this.vaga.length; i++){
+		            if (this.vaga[i][0] != null){
+		            	lista.add(this.vaga[i][0]);
+		            }
+		           if (this.vaga[i][1] != null){
+		            	lista.add(this.vaga[i][1]);
+		        }
+	  }
+		        return lista;
+	}
+
+		
+	    
+}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+package br.edu.fameg.sintaxe.avaliacaoParcial2;
+
+public class Pessoa {
+	
+	protected String nome;
+	protected String cpf;
+	protected String telefone;
+	
+	
+	
+	public Pessoa(String nome,String cpf,String telefone) {
+		this.nome = nome;
+		this.cpf = cpf;
+		this.telefone = telefone;
+		
+	}
+
+
+
+	public String getTelefone() {
+		return telefone;
+	}
+
+
+
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
+
+
+
+	public String getNome() {
+		return nome;
+	}
+
+
+
+	public String getCpf() {
+		return cpf;
+	}
+	
+	
+		
+	
+	
+	
+}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+package br.edu.fameg.sintaxe.avaliacaoParcial2;
+
+public enum Tipo {
+	
+	
+	carro,
+	moto,
+
+}
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+package br.edu.fameg.sintaxe.avaliacaoParcial2;
+
+import java.util.Date;
+
+public abstract class Veiculo{
+
+	protected String placa;
+    protected Tipo tipo;
+	protected int hora;
+	private String nome;
+
+	
+	
+	
+	
+	
+
+	public Veiculo(String placa,String nome,Tipo tipo) {
+		this.placa = placa;
+	    this.tipo = tipo;
+	    this.nome = nome;
+		
+	     Date data = new Date();
+	     int hora = data.getHours(); 
+		}
+	
+	
+	
+	public String getPlaca() {
+		return placa;
+	}
+
+
+
+	public Tipo getTipo() {
+		return tipo;
+	}
+
+
+
+	public int getHora() {
+		return hora;
+	}
+
+
+
+	public String getNome() {
+		return nome;
+	}
+
+
+
+	public abstract  double getPrimeiraHora();
+	public abstract  double getHoraAdicional();
+
+
+
+
+}
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+package br.edu.fameg.sintaxe.avaliacaoParcial2;
+
+public class Automovel extends Veiculo {
+	
+	public Automovel(String nome, String placa, Tipo tipo) {
+		super(placa,nome, tipo);
+		
+	}
+
+	private double primeiraHora = 2;
+	private double horaAdicional= 2.50;
+	@Override
+	public double getPrimeiraHora() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public double getHoraAdicional() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+}
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+package br.edu.fameg.sintaxe.avaliacaoParcial2;
+
+public class Moto extends Veiculo {
+	
+	public Moto(String placa,String nome, Tipo tipo) {
+		super(placa, nome, tipo);
+		
+	}
+
+	private double primeiraHora= 2;
+	private double horaAdicional=1.50;
+	
+	
+
+	@Override
+	public double getPrimeiraHora() {
+		
+		return primeiraHora;
+	}
+
+	@Override
+	public double getHoraAdicional() {
+		
+		return horaAdicional;
+	}
+	
+	
+
+}
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+package br.edu.fameg.sintaxe.avaliacaoParcial2;
+
+import java.util.ArrayList;
+import br.edu.fameg.sintaxe.avaliacaoParcial2.Pessoa;
+
+
+
+
+public class Teste {
+
+	public static void main(String[] args) {
+		
+        Estacionamento estacionamento = new Estacionamento();
+		
+		Pessoa p1 = new Pessoa("joão","0321.256.069-58","(47)9858-9856");
+		estacionamento.entradaVeiculo("FVB2233", "veiculo", Tipo.carro, p1);
+		
+		estacionamento.entradaVeiculo("bvc2265", "veiculo", Tipo.carro, p1);
+		
+		estacionamento.entradaVeiculo("FGH3125", "veiculo", Tipo.moto, p1);
+		estacionamento.entraVeiculo("CVB2312", "veiculo", Tipo.moto, p1);
+
+		
+		estacionamento.saiVeiculo("FVB2233");
+		
+		
+		
+		ArrayList<Veiculo> lista = estacionamento.listaEstacionados();
+		for (int i=0; i < lista.size(); i++)
+			System.out.println(lista.get(i).getPlaca());
+		
+	}
+}
+
+
+	
+	
+	
+	
+	
+		
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+
+
+
+
+
